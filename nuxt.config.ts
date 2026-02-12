@@ -1,11 +1,13 @@
-// nuxt.config.ts
+import tailwindcss from "@tailwindcss/vite";
+
 export default defineNuxtConfig({
-  future: {
-    compatibilityVersion: 4,
-  },
-  // Enable DevTools immediately - it's your best friend for mastery
+  compatibilityDate: "2025-07-15",
   devtools: { enabled: true },
-
-
-  spaLoadingTemplate: false
+  css: ['./app/assets/css/main.css'],
+  vite: {
+    plugins: [
+      // @ts-expect-error - Vite version mismatch between Nuxt and Tailwind
+      tailwindcss(),
+    ],
+  },
 })
