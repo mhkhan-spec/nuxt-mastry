@@ -1,15 +1,8 @@
 <script setup lang="ts">
-const { user, isLoggedIn, logout, setUser } = useUser()
-
-// Mock login for Day 4 testing
-const handleMockLogin = () => {
-  setUser({
-    id: '123',
-    email: 'senior@nuxt.dev',
-    name: 'Master Developer',
-    role: 'admin'
-  })
-}
+const config = useRuntimeConfig();
+console.log(config.public.apiBase) // Accessible everywhere
+console.log(config.apiSecret)     // Undefined on client, exists on server
+const { user, isLoggedIn, logout } = useUser()
 </script>
 
 <template>
@@ -21,12 +14,14 @@ const handleMockLogin = () => {
 
     <div class="flex items-center gap-4">
       <template v-if="isLoggedIn">
-        <span class="text-sm text-gray-600">Welcome, {{ user?.name }}</span>
-        <button @click="logout" class="text-xs text-red-500 underline">Logout</button>
+        <span class="text-sm font-medium text-gray-700">Hi, {{ user?.name }}</span>
+        <button @click="logout" class="px-3 py-1 text-sm text-red-600 hover:text-red-700 font-medium transition">
+          Logout
+        </button>
       </template>
-      <button v-else @click="handleMockLogin" class="px-3 py-1 bg-blue-600 text-white rounded text-sm">
-        Mock Login
-      </button>
+      <NuxtLink v-else to="/login" class="px-3 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700 transition">
+        Login
+      </NuxtLink>
     </div>
   </nav>
 </template>

@@ -1,4 +1,9 @@
 <script setup lang="ts">
+definePageMeta({
+  // This tells Nuxt to run app/middleware/auth.ts before entering this page
+  middleware: 'auth'
+})
+
 // Nuxt infers the type of 'projects' from server/api/projects.get.ts!
 // 'refresh' allows us to trigger a re-fetch manually
 const { data: projects, status, error, refresh } = await useFetch('/api/projects', {
