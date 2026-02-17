@@ -34,6 +34,8 @@ const prefetchProject = (id: string): void => {
             </button>
         </div>
 
+        <ProjectCreator @success="refresh" />
+
         <div v-if="error" class="text-red-500">
             Error loading projects: {{ error.message }}
         </div>

@@ -1,18 +1,21 @@
-import type { Task } from "~~/shared/types/task"
-import { tasksMock } from "~~/server/utils/state"
+import { useDB } from '../../../utils/db';
+import { tasks } from '../../../db/schema';
+import { eq } from 'drizzle-orm';
 
-// In-memory mock "database" is now in server/utils/state.ts
-// Nuxt auto-imports exports from server/utils
+export default defineEventHandler(async (event) => {
+    const projectId = getRouterParam(event, 'id');
+    const db = useDB();
 
-export default defineEventHandler(async (event): Promise<Task[]> => {
-    const projectId = getRouterParam(event, 'id')
-
-    // Simulate network delay
-    await new Promise(resolve => setTimeout(resolve, 800))
-
-    if (!projectId || !tasksMock[projectId]) {
-        return []
+    if (!projectId) {
+        throw createError({
+            statusCode: 400,
+            statusMessage: 'Project ID is required'
+        });
     }
 
-    return tasksMock[projectId]
-})
+    const projectTasks = await db.query.tasks.findMany({
+        where: eq(tasks.projectId, parseInt(projectId))
+    });
+
+    return projectTasks;
+});

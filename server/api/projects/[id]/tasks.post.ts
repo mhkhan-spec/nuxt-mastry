@@ -1,32 +1,30 @@
-import type { Task } from "~~/shared/types/task"
-import { tasksMock } from "~~/server/utils/state"
+import { useDB } from '../../../utils/db';
+import { tasks } from '../../../db/schema';
 
-export default defineEventHandler(async (event): Promise<Task> => {
-    const projectId = getRouterParam(event, 'id')
-    const body = await readBody(event)
+export default defineEventHandler(async (event) => {
+    const projectId = getRouterParam(event, 'id');
+    const body = await readBody(event);
+    const db = useDB();
+
+    if (!projectId) {
+        throw createError({
+            statusCode: 400,
+            statusMessage: 'Project ID is required'
+        });
+    }
 
     if (!body?.title) {
         throw createError({
             statusCode: 400,
             statusMessage: 'Title is required'
-        })
+        });
     }
 
-    // Simulate network delay
-    await new Promise(resolve => setTimeout(resolve, 1500))
+    const [newTask] = await db.insert(tasks).values({
+        projectId: parseInt(projectId),
+        title: body.title,
+        status: body.status || 'todo'
+    }).returning();
 
-    // For this demo, we save to our shared mock state
-    const newTask: Task = {
-        id: Math.floor(Math.random() * 10000),
-        title: body.title
-    }
-
-    if (projectId) {
-        if (!tasksMock[projectId]) {
-            tasksMock[projectId] = []
-        }
-        tasksMock[projectId].push(newTask)
-    }
-
-    return newTask
-})
+    return newTask;
+});

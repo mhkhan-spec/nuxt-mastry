@@ -5,7 +5,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     // Private keys (Server-side only)
     apiSecret: process.env.NUXT_API_SECRET || 'default_secret',
-
+    databaseUrl: process.env.DATABASE_URL || '',
     // Public keys (Exposed to Client)
     public: {
       apiBase: process.env.NUXT_PUBLIC_API_BASE || '/api'
