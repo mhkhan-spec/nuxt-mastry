@@ -20,6 +20,15 @@ export default defineNuxtConfig({
 
   devtools: { enabled: true },
 
+  nitro: {
+    devStorage: {
+      cache: {
+        driver: 'fs',
+        base: './.cache/nitro'
+      }
+    }
+  },
+
   vite: {
     plugins: [
       (tailwindcss as any)()

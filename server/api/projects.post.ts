@@ -17,5 +17,9 @@ export default defineEventHandler(async (event) => {
         description: body.description
     }).returning();
 
+    // Invalidate the projects-list cache
+    const cacheKey = 'nitro:handlers:projects-list:all.json';
+    await useStorage('cache').removeItem(cacheKey);
+
     return newProject;
 });

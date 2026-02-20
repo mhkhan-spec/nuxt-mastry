@@ -1,14 +1,21 @@
 import { useDB } from '../utils/db';
 
-export default defineEventHandler(async (event) => {
-    const db = useDB(); // Now explicitly imported
+export default defineCachedEventHandler(async (event) => {
+    const db = useDB();
+
+    console.log('--- Cache Miss: Querying Postgres ---');
 
     // Fully type-safe query
     const allProjects = await db.query.projects.findMany({
         with: {
-            tasks: true // If you set up relations
+            tasks: true
         }
     });
 
     return allProjects;
+}, {
+    maxAge: 60,
+    swr: true,
+    name: 'projects-list',
+    getKey: (event) => 'all'
 });
